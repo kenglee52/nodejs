@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  categoryID   Int   @id   @default(autoincrement())
+  categoryName  String @db.Char(30)  @unique
+  menus   Menu[]
+  @@map("category")
+}
+
+model Unit {
+  unitID   Int   @id  @default(autoincrement())
+  unitName   String @db.Char(30)  @unique
+  menus    Menu[]
+  @@map("unit")
+}
+
+model Table {
+  tableID  String @db.Char(5)  @id
+  tableStatus  Int
+  orders   Order[]
+  @@map("table")
+}
+
+model Menu {
+  menuID   Int  @id  @default(autoincrement())
+  menuName   String @db.Char(50)  @unique
+  categoryID  Int 
+  category   Category   @relation(fields: [categoryID], references: [categoryID],onDelete: Cascade, onUpdate: Cascade)
+  unitID   Int
+  unit Unit @relation(fields: [unitID], references: [unitID], onDelete: Cascade, onUpdate: Cascade)
+  price   Int
+  qty     Int
+  image   String @db.Char(255)
+  order_details   Order_Detail[]
+  @@map("menu")
+}
+
+model Order {
+  orderID   Int  @id  @default(autoincrement())
+  tableID    String  @db.Char(5)
+  table   Table  @relation(fields: [tableID], references: [tableID], onDelete: Cascade, onUpdate: Cascade)
+  date    DateTime
+  order_details    Order_Detail[]
+  payments    Payment[]
+  @@map("order")
+}
+
+model Order_Detail {
+  ID    Int  @id  @default(autoincrement())
+  orderID   Int
+  order   Order  @relation(fields: [orderID], references: [orderID], onDelete: Cascade, onUpdate: Cascade)
+  menuID   Int 
+  menu    Menu @relation(fields: [menuID] , references: [menuID], onDelete: Cascade, onUpdate: Cascade)
+  saleQty   Int
+  total   Int
+  @@map("order_detail")
+}
+
+model Payment {
+  paymentID   Int @id   @default(autoincrement())
+  orderID    Int
+  order   Order @relation(fields: [orderID], references: [orderID], onDelete: Cascade, onUpdate: Cascade)
+  amount   Int
+  @@map("payment")
+}
