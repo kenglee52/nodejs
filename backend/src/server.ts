@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import UnitRouter from "./routes/unit.router";
 import CategoryRouter from "./routes/category.router";
 import TableRouter from "./routes/table.router";
+import MenuRouter from "./routes/menu.router";
 const port = 3000;
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(bodyParser.json());
 app.use("/api/unit", UnitRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/table", TableRouter);
+app.use("/api/menu", MenuRouter);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
