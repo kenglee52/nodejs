@@ -3,7 +3,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getAllMenus = async () => {
-    return await prisma.menu.findMany();
+    return await prisma.menu.findMany({
+        include: {
+            unit: true
+        }
+    });
 }
 
 export const getMenuById = async (id: number) => {
